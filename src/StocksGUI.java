@@ -28,7 +28,7 @@ public class StocksGUI extends javax.swing.JFrame {
 
         // set form to center of screen
         this.setLocationRelativeTo(null);
-        
+
         // calculate total portfolio value
         calculateTotalValue();
 
@@ -216,6 +216,11 @@ public class StocksGUI extends javax.swing.JFrame {
         mnuFile.setText("File");
 
         mniOpen.setText("Open");
+        mniOpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniOpenActionPerformed(evt);
+            }
+        });
         mnuFile.add(mniOpen);
 
         mniSave.setText("Save");
@@ -315,7 +320,7 @@ public class StocksGUI extends javax.swing.JFrame {
 
         // update the total value label
         calculateTotalValue();
-        
+
         // reset form for next stock
         txtStockName.setText("");
         txtQuantity.setText("");
@@ -351,35 +356,60 @@ public class StocksGUI extends javax.swing.JFrame {
         if (position >= 0) {
             model.remove(position);
             lblProfitLoss.setText("Profit / Loss");
-            
+
             // update the total value label
             calculateTotalValue();
         }
-        
+
         // update the total value label
         calculateTotalValue();
     }//GEN-LAST:event_btnRemoveStockActionPerformed
 
     private void mniExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniExitActionPerformed
-       System.exit(0);
+        System.exit(0);
     }//GEN-LAST:event_mniExitActionPerformed
 
     private void mniSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniSaveActionPerformed
         //get filename
         String fileName = JOptionPane.showInputDialog("Enter filename: ");
-        
+
         // save data to file
         StockIO outToFile = new StockIO(fileName);
-        
+
         ArrayList<Stock> data = new ArrayList<Stock>();
-        
-        for(int i = 0; i< model.size(); i++) {
+
+        for (int i = 0; i < model.size(); i++) {
             Stock stk = model.elementAt(i);
             data.add(stk);
         }
-        
+
         outToFile.saveData(data);
+        
+        JOptionPane.showMessageDialog(this, "Data was saved to the file");
     }//GEN-LAST:event_mniSaveActionPerformed
+
+    private void mniOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniOpenActionPerformed
+        // get file name
+        String fileName = JOptionPane.showInputDialog("Enter filename: ");
+        
+        // get data from file
+        StockIO inFromFile = new StockIO(fileName);
+        
+        ArrayList<Stock> data = inFromFile.getData();
+        
+        // clear model
+        // then copy new data to model
+        model.clear();
+        
+        for(int i = 0; i < data.size(); i++) {
+            Stock stk = data.get(i);
+            model.addElement(stk);
+        }
+           
+        // update the total value
+        calculateTotalValue();
+               
+    }//GEN-LAST:event_mniOpenActionPerformed
 
     /**
      * @param args the command line arguments
@@ -443,18 +473,18 @@ public class StocksGUI extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void calculateTotalValue() {
-       double totalValue = 0.0;
-       
-       // go through each stock in portfolio
-       // and calculate total value 
-       for (int i = 0; i< model.size(); i++){
-           Stock stk = model.elementAt(i);
-           totalValue += stk.getCurrentPrice() * stk.getNumberOfShares();
-       }
-        
-       //show total value
-       DecimalFormat fmt = new DecimalFormat("$#,##0.00");
-       lblTotalValue.setText("Total Value: " + fmt.format(totalValue));
-       
+        double totalValue = 0.0;
+
+        // go through each stock in portfolio
+        // and calculate total value 
+        for (int i = 0; i < model.size(); i++) {
+            Stock stk = model.elementAt(i);
+            totalValue += stk.getCurrentPrice() * stk.getNumberOfShares();
+        }
+
+        //show total value
+        DecimalFormat fmt = new DecimalFormat("$#,##0.00");
+        lblTotalValue.setText("Total Value: " + fmt.format(totalValue));
+
     }
 }
