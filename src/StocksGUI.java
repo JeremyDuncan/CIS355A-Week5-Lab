@@ -27,6 +27,9 @@ public class StocksGUI extends javax.swing.JFrame {
 
         // set form to center of screen
         this.setLocationRelativeTo(null);
+        
+        // calculate total portfolio value
+        calculateTotalValue();
 
     }
 
@@ -45,6 +48,7 @@ public class StocksGUI extends javax.swing.JFrame {
         lstStocks = new javax.swing.JList<>();
         lblProfitLoss = new javax.swing.JLabel();
         btnRemoveStock = new javax.swing.JButton();
+        lblTotalValue = new javax.swing.JLabel();
         pnlAddStock = new javax.swing.JPanel();
         lblStockName = new javax.swing.JLabel();
         txtStockName = new javax.swing.JTextField();
@@ -55,6 +59,12 @@ public class StocksGUI extends javax.swing.JFrame {
         lblCurrentPrice = new javax.swing.JLabel();
         txtCurrentPrice = new javax.swing.JTextField();
         btnAddStock = new javax.swing.JButton();
+        mnbMain = new javax.swing.JMenuBar();
+        mnuFile = new javax.swing.JMenu();
+        mniOpen = new javax.swing.JMenuItem();
+        mniSave = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        mniExit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Stocks4U App");
@@ -81,6 +91,9 @@ public class StocksGUI extends javax.swing.JFrame {
             }
         });
 
+        lblTotalValue.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        lblTotalValue.setText("Total Value:");
+
         javax.swing.GroupLayout pnlStockListLayout = new javax.swing.GroupLayout(pnlStockList);
         pnlStockList.setLayout(pnlStockListLayout);
         pnlStockListLayout.setHorizontalGroup(
@@ -91,12 +104,13 @@ public class StocksGUI extends javax.swing.JFrame {
                     .addComponent(scrStocks)
                     .addGroup(pnlStockListLayout.createSequentialGroup()
                         .addComponent(lblProfitLoss, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 162, Short.MAX_VALUE)))
+                        .addGap(0, 174, Short.MAX_VALUE))
+                    .addGroup(pnlStockListLayout.createSequentialGroup()
+                        .addComponent(lblTotalValue, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)
+                        .addComponent(btnRemoveStock)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(pnlStockListLayout.createSequentialGroup()
-                .addGap(361, 361, 361)
-                .addComponent(btnRemoveStock)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlStockListLayout.setVerticalGroup(
             pnlStockListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,11 +120,11 @@ public class StocksGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblProfitLoss)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRemoveStock)
+                .addGroup(pnlStockListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRemoveStock)
+                    .addComponent(lblTotalValue))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        lblProfitLoss.getAccessibleContext().setAccessibleName("Profit / Loss");
 
         jtpMainTabs.addTab("List", pnlStockList);
 
@@ -198,6 +212,28 @@ public class StocksGUI extends javax.swing.JFrame {
 
         jtpMainTabs.addTab("Add Stock", pnlAddStock);
 
+        mnuFile.setText("File");
+
+        mniOpen.setText("Open");
+        mnuFile.add(mniOpen);
+
+        mniSave.setText("Save");
+        mniSave.setActionCommand("Save");
+        mnuFile.add(mniSave);
+        mnuFile.add(jSeparator1);
+
+        mniExit.setText("Exit");
+        mniExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniExitActionPerformed(evt);
+            }
+        });
+        mnuFile.add(mniExit);
+
+        mnbMain.add(mnuFile);
+
+        setJMenuBar(mnbMain);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -271,6 +307,9 @@ public class StocksGUI extends javax.swing.JFrame {
         // add the stock object to the Jlist
         model.addElement(stk);
 
+        // update the total value label
+        calculateTotalValue();
+        
         // reset form for next stock
         txtStockName.setText("");
         txtQuantity.setText("");
@@ -306,8 +345,18 @@ public class StocksGUI extends javax.swing.JFrame {
         if (position >= 0) {
             model.remove(position);
             lblProfitLoss.setText("Profit / Loss");
+            
+            // update the total value label
+            calculateTotalValue();
         }
+        
+        // update the total value label
+        calculateTotalValue();
     }//GEN-LAST:event_btnRemoveStockActionPerformed
+
+    private void mniExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniExitActionPerformed
+       System.exit(0);
+    }//GEN-LAST:event_mniExitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -347,13 +396,20 @@ public class StocksGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStock;
     private javax.swing.JButton btnRemoveStock;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTabbedPane jtpMainTabs;
     private javax.swing.JLabel lblCurrentPrice;
     private javax.swing.JLabel lblProfitLoss;
     private javax.swing.JLabel lblPurchasePrice;
     private javax.swing.JLabel lblQuantity;
     private javax.swing.JLabel lblStockName;
+    private javax.swing.JLabel lblTotalValue;
     private javax.swing.JList<Stock> lstStocks;
+    private javax.swing.JMenuBar mnbMain;
+    private javax.swing.JMenuItem mniExit;
+    private javax.swing.JMenuItem mniOpen;
+    private javax.swing.JMenuItem mniSave;
+    private javax.swing.JMenu mnuFile;
     private javax.swing.JPanel pnlAddStock;
     private javax.swing.JPanel pnlStockList;
     private javax.swing.JScrollPane scrStocks;
@@ -362,4 +418,20 @@ public class StocksGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txtQuantity;
     private javax.swing.JTextField txtStockName;
     // End of variables declaration//GEN-END:variables
+
+    private void calculateTotalValue() {
+       double totalValue = 0.0;
+       
+       // go through each stock in portfolio
+       // and calculate total value 
+       for (int i = 0; i< model.size(); i++){
+           Stock stk = model.elementAt(i);
+           totalValue += stk.getCurrentPrice() * stk.getNumberOfShares();
+       }
+        
+       //show total value
+       DecimalFormat fmt = new DecimalFormat("$#,##0.00");
+       lblTotalValue.setText("Total Value: " + fmt.format(totalValue));
+       
+    }
 }
