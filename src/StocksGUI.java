@@ -1,5 +1,6 @@
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -219,6 +220,11 @@ public class StocksGUI extends javax.swing.JFrame {
 
         mniSave.setText("Save");
         mniSave.setActionCommand("Save");
+        mniSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniSaveActionPerformed(evt);
+            }
+        });
         mnuFile.add(mniSave);
         mnuFile.add(jSeparator1);
 
@@ -357,6 +363,23 @@ public class StocksGUI extends javax.swing.JFrame {
     private void mniExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniExitActionPerformed
        System.exit(0);
     }//GEN-LAST:event_mniExitActionPerformed
+
+    private void mniSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniSaveActionPerformed
+        //get filename
+        String fileName = JOptionPane.showInputDialog("Enter filename: ");
+        
+        // save data to file
+        StockIO outToFile = new StockIO(fileName);
+        
+        ArrayList<Stock> data = new ArrayList<Stock>();
+        
+        for(int i = 0; i< model.size(); i++) {
+            Stock stk = model.elementAt(i);
+            data.add(stk);
+        }
+        
+        outToFile.saveData(data);
+    }//GEN-LAST:event_mniSaveActionPerformed
 
     /**
      * @param args the command line arguments
